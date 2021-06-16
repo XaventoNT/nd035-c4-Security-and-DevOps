@@ -21,7 +21,7 @@ public class ModifyCartRequest {
 		this.username = username;
 	}
 
-	public long getItemId() {
+	public Long getItemId() {
 		return itemId;
 	}
 
