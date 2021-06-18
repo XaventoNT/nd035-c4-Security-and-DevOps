@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,8 @@ public class JWTAuthenticationVerficationFilter extends BasicAuthenticationFilte
         super(authManager);
     }
 
+    public static final Logger log = LoggerFactory.getLogger(JWTAuthenticationVerficationFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -32,6 +36,7 @@ public class JWTAuthenticationVerficationFilter extends BasicAuthenticationFilte
 
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             chain.doFilter(req, res);
+            log.info("Without token");
             return;
         }
 
@@ -50,8 +55,10 @@ public class JWTAuthenticationVerficationFilter extends BasicAuthenticationFilte
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }
+            log.info("Token invalid");
             return null;
         }
+        log.info("Without token");
         return null;
     }
 
